@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'unsafe-inline'">
+<title>浮窗坞</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+  body { display: grid; place-items: center; -webkit-user-select: none; user-select: none; cursor: default; }
+
+  #ball {
+    width: var(--size, 64px);
+    height: var(--size, 64px);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    position: relative;
+    opacity: var(--opacity, 0.85);
+    background:
+      radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 58%),
+      linear-gradient(155deg, #ffffff 0%, #f0f1f3 52%, #dcdfe4 100%);
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+    transition: opacity 90ms ease, transform 110ms ease, box-shadow 110ms ease;
+  }
+  /* 只用主进程推来的类：页面在穿透态收不到 mouseleave，body:hover 会一直停在 true */
+  #ball.hover { opacity: 1; transform: scale(var(--hover-scale, 1.1)); box-shadow: 0 5px 17px rgba(0, 0, 0, 0.36), inset 0 0 0 1px rgba(255, 255, 255, 0.85); }
+  #ball.dragging { transition: none; transform: scale(1.02); }
+  #ball.press { transform: scale(0.94); }
+
+  #art { width: 54%; height: 54%; display: grid; place-items: center; color: #14171a; }
+  #art svg { width: 100%; height: 100%; stroke: currentColor; stroke-width: 1.9; fill: none; }
+  #custom { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: none; }
+  #ball.has-icon #art { display: none; }
+  #ball.has-icon #custom { display: block; }
+</style>
+</head>
+<body>
+  <div id="ball" title="单击展开功能圈 · 右键更多">
+    <img id="custom" alt="">
+    <span id="art"></span>
+  </div>
+<script src="icons.js"></script>
+<script src="float.js"></script>
+</body>
+</html>

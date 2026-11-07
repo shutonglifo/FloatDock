@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'">
+<title>未命名.txt</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { display: flex; flex-direction: column; background: #fbfbfa; color: #17191c;
+    font: 13px/1.5 "Microsoft YaHei UI", system-ui, sans-serif; }
+
+  .bar { -webkit-app-region: drag; display: flex; align-items: center; gap: 8px; padding: 0 8px 0 12px; height: 38px; flex: none;
+    background: linear-gradient(180deg, #f2f3f5, #eceef0); border-bottom: 1px solid rgba(20,23,26,.14); }
+  .title { font-weight: 600; font-size: 12.5px; color: #1b1e22; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mark { width: 8px; height: 8px; border-radius: 50%; background: #d4d7db; flex: none; }
+  .mark.dirty { background: #e0a33c; }
+  .spacer { flex: 1; }
+  .tools, .wins { -webkit-app-region: no-drag; display: flex; gap: 4px; }
+  button { border: 1px solid rgba(20,23,26,.18); background: #fff; color: #1b1e22; border-radius: 7px; padding: 4px 10px;
+    font-size: 12px; font-family: inherit; cursor: pointer; }
+  button:hover { background: #f2f6fb; }
+  button:disabled { color: #94989d; background: #f4f6f8; cursor: default; }
+  .wins button { border-color: transparent; background: transparent; padding: 4px 9px; }
+  .wins button:hover { background: rgba(20,23,26,.09); }
+  .wins .close:hover { background: #d94f4f; color: #fff; }
+
+  #ta { flex: 1; border: 0; outline: none; resize: none; padding: 16px 20px; background: #fff;
+    font: 15px/1.75 "Microsoft YaHei UI", system-ui, sans-serif; color: #15181c; caret-color: #14171a; }
+
+  .foot { flex: none; display: flex; align-items: center; gap: 12px; padding: 5px 14px; height: 26px;
+    background: #f2f5f9; border-top: 1px solid rgba(20,23,26,.1); font-size: 11.5px; color: #6b7076; }
+  #path { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .foot .spacer { flex: 1; }
+
+  #grip { position: fixed; right: 0; bottom: 0; width: 18px; height: 18px; cursor: nwse-resize; }
+  #grip::after { content: ''; position: absolute; right: 4px; bottom: 4px; width: 8px; height: 8px;
+    border-right: 2px solid rgba(20,23,26,.3); border-bottom: 2px solid rgba(20,23,26,.3); }
+</style>
+</head>
+<body>
+  <div class="bar">
+    <span class="mark" id="mark"></span>
+    <span class="title" id="title">未命名.txt</span>
+    <div class="spacer"></div>
+    <div class="tools">
+      <button id="new">新建</button>
+      <button id="open">打开</button>
+      <button id="saveas">另存为</button>
+      <button id="save">保存</button>
+    </div>
+    <div class="wins">
+      <button id="min">–</button>
+      <button class="close" id="close">×</button>
+    </div>
+  </div>
+
+  <textarea id="ta" spellcheck="false" placeholder="开始输入…"></textarea>
+
+  <div class="foot">
+    <span id="path">未保存</span>
+    <div class="spacer"></div>
+    <span id="meta">0 字</span>
+    <span id="state">已保存</span>
+  </div>
+  <div id="grip" title="拖动改变窗口大小"></div>
+<script src="editor.js"></script>
+</body>
+</html>

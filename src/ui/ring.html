@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'unsafe-inline'">
+<title>ring</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+  body { -webkit-user-select: none; user-select: none; font: 11.5px/1.4 "Microsoft YaHei UI", system-ui, sans-serif; }
+
+  .slot {
+    position: absolute;
+    width: 44px; height: 44px;
+    margin: -22px 0 0 -22px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(20, 23, 26, 0.18);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.32);
+    color: #14171a;
+    cursor: pointer;
+    opacity: 0;
+    transform: scale(0.4);
+    transition: opacity 130ms ease, transform 150ms cubic-bezier(.2,.9,.3,1.4), box-shadow 120ms ease, background 120ms ease;
+  }
+  body.open .slot { opacity: 1; transform: scale(1); }
+  .slot svg { width: 21px; height: 21px; display: block; pointer-events: none; }
+  .slot .appicon { width: 26px; height: 26px; display: block; pointer-events: none; }
+  .slot.hot { transform: scale(1.18); background: #fff; border-color: rgba(20,23,26,.4); box-shadow: 0 6px 18px rgba(0,0,0,.4); }
+
+  .slot.lifting {
+    transform: scale(1.14);
+    translate: var(--drag-x, 0) var(--drag-y, 0);
+    transition: none;
+    z-index: 3;
+    background: #fff;
+    border-color: #14171a;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.46);
+    cursor: grabbing;
+  }
+
+  .slot.empty {
+    width: 14px; height: 14px; margin: -7px 0 0 -7px;
+    background: rgba(224, 226, 228, 0.6);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+    cursor: default;
+  }
+  .slot.empty svg { display: none; }
+  .slot.empty.hot { transform: scale(1.5); }
+
+  #hint {
+    position: absolute;
+    left: 0; top: 0;
+    padding: 3px 9px;
+    border-radius: 9px;
+    background: rgba(18, 18, 20, 0.82);
+    color: #f2f2f3;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 120ms ease;
+    pointer-events: none;
+    z-index: 2;
+  }
+  #hint.show { opacity: 1; }
+</style>
+</head>
+<body>
+  <div id="ring"></div>
+  <div id="hint"></div>
+<script src="icons.js"></script>
+<script src="ring.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+{
+  "name": "floatdock",
+  "productName": "FloatDock",
+  "version": "0.6.8",
+  "description": "悬浮在桌面上的功能圈：快捷文本框、窗口置顶，槽位可自己扩展",
+  "main": "src/main/index.js",
+  "author": "yuer",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^38.1.0",
+    "electron-builder": "^26.0.12",
+    "iconsax": "^0.1.1"
+  },
+  "build": {
+    "appId": "com.yuer.floatdock",
+    "productName": "FloatDock",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "浮窗坞",
+      "uninstallDisplayName": "浮窗坞 FloatDock"
+    }
+  },
+  "dependencies": {
+    "koffi": "^3.3.7"
+  }
+}

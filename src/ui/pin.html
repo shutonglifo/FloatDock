@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'">
+<title>pin</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+  #tack { position: absolute; inset: 0; display: grid; place-items: center; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .55)); }
+  /* 绕钉尖旋转，指针压在钉尖上，角度与标题栏钉标一致 */
+  #tack svg { width: 22px; height: 22px; transform: rotate(24deg); transform-origin: 50% 91.7%; }
+  .body { fill: #d9534f; }
+  body.done .body { fill: #2f9e63; }
+  body.off .body { fill: #8d9196; }
+</style>
+</head>
+<body>
+  <div id="tack"></div>
+<script src="icons.js"></script>
+<script src="tack.js"></script>
+<script src="pin.js"></script>
+</body>
+</html>

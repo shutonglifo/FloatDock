@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'">
+<title>mark</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; }
+  body { display: grid; place-items: center; cursor: pointer; -webkit-user-select: none; user-select: none; }
+
+  #mark {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(0, 0, 0, 0.42);
+    transition: background 120ms ease, transform 120ms ease;
+  }
+  #mark:hover { background: rgba(217, 83, 79, 0.9); transform: scale(1.12); }
+  /* 与跟随指针的图钉同一角度 */
+  #mark svg { width: 15px; height: 15px; transform: rotate(24deg); }
+  .body { fill: #e2635e; }
+  #mark:hover .body { fill: #fff; }
+</style>
+</head>
+<body>
+  <div id="mark" title="取消置顶"></div>
+<script src="icons.js"></script>
+<script src="tack.js"></script>
+<script src="mark.js"></script>
+</body>
+</html>
