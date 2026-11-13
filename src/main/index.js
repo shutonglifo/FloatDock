@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog, Menu, screen, globalShortcut, shell
 const path = require('node:path')
 const fs = require('node:fs')
 const { execFile, spawn } = require('node:child_process')
-const { Store, LIMITS, BALL_PAD } = require('./store')
+const { Store, LIMITS, BALL_PAD, SLOT_COUNT, SLOT_COUNT2 } = require('./store')
 const ring = require('./ring')
 const pin = require('./pin')
 const apps = require('./apps')
@@ -402,7 +402,7 @@ let resizeOrigin = null
 
 function registerIpc () {
   ipcMain.handle('settings:get', () => snapshot())
-  ipcMain.handle('settings:limits', () => LIMITS)
+  ipcMain.handle('settings:limits', () => ({ ...LIMITS, slotInner: SLOT_COUNT, slotOuter: SLOT_COUNT2 }))
 
   ipcMain.handle('settings:set', (_event, patch) => {
     const { size, ...rest } = patch
@@ -447,6 +447,10 @@ function registerIpc () {
 
   // 槽位换绑：内置功能直接写，程序/文件夹/文件走系统选择框；从程序列表选定则直接带 path 过来
   ipcMain.handle('slot:pick', async (event, { index, kind, path: chosenPath }) => {
+    // 第二层要等第一层全绑满才开放新格（已有内容仍可替换/清空）
+    if (index >= SLOT_COUNT && kind !== 'empty' && store.data.slots[index].kind === 'empty' && store.outerLocked()) {
+      return { ok: false, error: `先填满第一层 ${SLOT_COUNT} 格` }
+    }
     if (chosenPath) {
       store.setSlot(index, { kind, path: chosenPath })
       pushSettings()

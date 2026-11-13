@@ -6,6 +6,8 @@ const preview = document.getElementById('preview')
 const launch = document.getElementById('launch')
 const error = document.getElementById('error')
 const slotsBox = document.getElementById('slots')
+const slots2Box = document.getElementById('slots2')
+const slots2Tip = document.getElementById('slots2Tip')
 const chooser = document.getElementById('chooser')
 const picker = document.getElementById('picker')
 const filter = document.getElementById('filter')
@@ -24,6 +26,7 @@ const KINDS = [
 ]
 
 let active = null
+let innerCount = 10
 let current = { opacity: 0.85, size: 64, autoLaunch: false, iconDataUrl: null, slots: [] }
 
 function svgFor (icon) {
@@ -58,27 +61,42 @@ function render (s) {
   renderSlots()
 }
 
+function slotRow (slot, g, num, pickLocked) {
+  const row = document.createElement('div')
+  row.className = 'slot-row' + (slot.kind === 'empty' ? ' empty' : '')
+  row.innerHTML = `<span class="slot-n"></span><span class="slot-icon"></span>
+    <span class="slot-name"><b></b></span>
+    <span class="slot-acts"><button data-pick>更换</button><button data-clear>清空</button></span>`
+  row.querySelector('.slot-n').textContent = String(num)
+  row.querySelector('.slot-icon').innerHTML = slot.iconDataUrl
+    ? `<img class="appicon" src="${slot.iconDataUrl}" alt="">`
+    : svgFor(slot.icon)
+  row.querySelector('.slot-name b').textContent = slot.label
+  if (slot.path) {
+    const sub = document.createElement('span')
+    sub.textContent = slot.path
+    row.querySelector('.slot-name').appendChild(sub)
+  }
+  const pick = row.querySelector('[data-pick]')
+  if (pickLocked) {
+    pick.disabled = true
+    pick.title = `先填满第一层 ${innerCount} 格`
+  }
+  pick.addEventListener('click', (event) => openChooser(g, event.currentTarget))
+  row.querySelector('[data-clear]').addEventListener('click', () => window.api.clearSlot(g))
+  return row
+}
+
+// 全局下标 0~9 是第一层，10~21 是第二层；两层分开渲染但共用一套行模板
 function renderSlots () {
   slotsBox.textContent = ''
+  slots2Box.textContent = ''
+  const locked = current.slots.slice(0, innerCount).some((s) => s.kind === 'empty')
+  slots2Tip.style.display = locked ? '' : 'none'
   current.slots.forEach((slot, i) => {
-    const row = document.createElement('div')
-    row.className = 'slot-row' + (slot.kind === 'empty' ? ' empty' : '')
-    row.innerHTML = `<span class="slot-n"></span><span class="slot-icon"></span>
-      <span class="slot-name"><b></b></span>
-      <span class="slot-acts"><button data-pick>更换</button><button data-clear>清空</button></span>`
-    row.querySelector('.slot-n').textContent = String(i + 1)
-    row.querySelector('.slot-icon').innerHTML = slot.iconDataUrl
-      ? `<img class="appicon" src="${slot.iconDataUrl}" alt="">`
-      : svgFor(slot.icon)
-    row.querySelector('.slot-name b').textContent = slot.label
-    if (slot.path) {
-      const sub = document.createElement('span')
-      sub.textContent = slot.path
-      row.querySelector('.slot-name').appendChild(sub)
-    }
-    row.querySelector('[data-pick]').addEventListener('click', (event) => openChooser(i, event.currentTarget))
-    row.querySelector('[data-clear]').addEventListener('click', () => window.api.clearSlot(i))
-    slotsBox.appendChild(row)
+    const outer = i >= innerCount
+    const row = slotRow(slot, i, outer ? i - innerCount + 1 : i + 1, outer && locked && slot.kind === 'empty')
+    ;(outer ? slots2Box : slotsBox).appendChild(row)
   })
 }
 
@@ -260,6 +278,7 @@ window.api.onSettings(render)
 
 ;(async () => {
   const [s, limits] = await Promise.all([window.api.getSettings(), window.api.getLimits()])
+  innerCount = limits.slotInner || 10
   opacityInput.min = String(Math.round(limits.opacity.min * 100))
   opacityInput.max = String(Math.round(limits.opacity.max * 100))
   sizeInput.min = String(limits.size.min)

@@ -10,8 +10,8 @@
 
   .slot {
     position: absolute;
-    width: 44px; height: 44px;
-    margin: -22px 0 0 -22px;
+    width: var(--s, 44px); height: var(--s, 44px);
+    margin: calc(var(--s, 44px) / -2) 0 0 calc(var(--s, 44px) / -2);
     border-radius: 50%;
     display: grid; place-items: center;
     background: rgba(255, 255, 255, 0.94);
@@ -24,8 +24,8 @@
     transition: opacity 130ms ease, transform 150ms cubic-bezier(.2,.9,.3,1.4), box-shadow 120ms ease, background 120ms ease;
   }
   body.open .slot { opacity: 1; transform: scale(1); }
-  .slot svg { width: 21px; height: 21px; display: block; pointer-events: none; }
-  .slot .appicon { width: 26px; height: 26px; display: block; pointer-events: none; }
+  .slot svg { width: calc(var(--s, 44px) * 0.48); height: calc(var(--s, 44px) * 0.48); display: block; pointer-events: none; }
+  .slot .appicon { width: calc(var(--s, 44px) * 0.6); height: calc(var(--s, 44px) * 0.6); display: block; pointer-events: none; }
   .slot.hot { transform: scale(1.18); background: #fff; border-color: rgba(20,23,26,.4); box-shadow: 0 6px 18px rgba(0,0,0,.4); }
 
   .slot.lifting {

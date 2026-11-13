@@ -24,6 +24,9 @@ const LIMITS = {
 }
 
 const SLOT_COUNT = 10
+const SLOT_COUNT2 = 12
+// 两层共用一套全局下标：0~9 内圈，10~21 外圈
+const SLOT_TOTAL = SLOT_COUNT + SLOT_COUNT2
 const KINDS = ['empty', 'note', 'pin', 'app', 'folder', 'file']
 
 // 槽位展示信息集中在这里，环形菜单和设置面板共用一份，加功能只改这一处
@@ -38,7 +41,7 @@ const SLOT_META = {
 
 function defaultSlots () {
   const slots = [{ kind: 'note' }, { kind: 'pin' }]
-  while (slots.length < SLOT_COUNT) slots.push({ kind: 'empty' })
+  while (slots.length < SLOT_TOTAL) slots.push({ kind: 'empty' })
   return slots
 }
 
@@ -64,7 +67,7 @@ function describe (slot) {
 function normalizeSlots (input) {
   if (!Array.isArray(input)) return defaultSlots()
   const out = []
-  for (let i = 0; i < SLOT_COUNT; i++) {
+  for (let i = 0; i < SLOT_TOTAL; i++) {
     const raw = input[i]
     if (!raw || !KINDS.includes(raw.kind)) {
       out.push({ kind: 'empty' })
@@ -153,16 +156,23 @@ class Store {
     return this.data.slots.map(describe)
   }
 
+  // 外圈第一格要等内圈 10 格全绑上才解锁；已绑的外圈格可以继续换/清
+  outerLocked () {
+    return this.data.slots.slice(0, SLOT_COUNT).some((s) => s.kind === 'empty')
+  }
+
   setSlot (index, slot) {
-    if (index < 0 || index >= SLOT_COUNT) return this.all()
+    if (index < 0 || index >= SLOT_TOTAL) return this.all()
     const slots = this.data.slots.map((s) => ({ ...s }))
-    slots[index] = { kind: KINDS.includes(slot.kind) ? slot.kind : 'empty' }
+    const kind = KINDS.includes(slot.kind) ? slot.kind : 'empty'
+    if (index >= SLOT_COUNT && kind !== 'empty' && slots[index].kind === 'empty' && this.outerLocked()) return this.all()
+    slots[index] = { kind }
     if (slots[index].kind !== 'empty' && slot.path) slots[index].path = slot.path
     return this.set({ slots })
   }
 
   swapSlots (a, b) {
-    if (a === b || a < 0 || b < 0 || a >= SLOT_COUNT || b >= SLOT_COUNT) return this.all()
+    if (a === b || a < 0 || b < 0 || a >= SLOT_TOTAL || b >= SLOT_TOTAL) return this.all()
     const slots = this.data.slots.map((s) => ({ ...s }))
     ;[slots[a], slots[b]] = [slots[b], slots[a]]
     return this.set({ slots })
@@ -209,4 +219,4 @@ class Store {
   }
 }
 
-module.exports = { Store, DEFAULTS, LIMITS, SLOT_COUNT, KINDS, SLOT_META, describe, defaultSlots, BALL_PAD }
+module.exports = { Store, DEFAULTS, LIMITS, SLOT_COUNT, SLOT_COUNT2, SLOT_TOTAL, KINDS, SLOT_META, describe, defaultSlots, BALL_PAD }

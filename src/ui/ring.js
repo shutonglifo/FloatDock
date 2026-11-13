@@ -33,8 +33,10 @@ async function init () {
     el.className = 'slot' + (slot.kind === 'empty' ? ' empty' : '')
     el.style.left = `${pos.x}px`
     el.style.top = `${pos.y}px`
+    // 双层时内圈/外圈图标尺寸不同，由主进程把每格尺寸带过来
+    el.style.setProperty('--s', `${item.size || 44}px`)
     ring.appendChild(el)
-    const node = { el, pos, index: item.index, slot }
+    const node = { el, pos, size: item.size || 44, index: item.index, slot }
     nodes.push(node)
     bindDrag(node)
   })
@@ -117,7 +119,7 @@ function showHint (index) {
   if (!node || !label) return
   const w = hint.offsetWidth
   const h = hint.offsetHeight
-  const gap = 22 + 10
+  const gap = node.size / 2 + 10
   let x = node.pos.x + gap
   if (x + w > innerWidth - 6) x = node.pos.x - gap - w
   x = Math.max(6, Math.min(x, innerWidth - w - 6))
