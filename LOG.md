@@ -1,5 +1,11 @@
 # FloatDock 更新日志
 
+## 0.6.9 — 2026-11-13 portable 版开机自启失效
+
+- 现象：本机自启正常，其他电脑勾选「开机自启」后重启没反应。
+- 根因：`applyLoginItem` 登记的是 `process.execPath`，而 portable 版运行时真正的 exe 在随机临时目录里。取证：直接启动 `dist/FloatDock 0.6.8.exe`，进程路径是 `...\AppData\Local\Temp\3LmFu79CNFpslahPc2gguDWeC49\FloatDock.exe`，同时 `HKCU\...\Run\com.yuer.floatdock` 被写成同一个 Temp 路径——Temp 会被清理，重启后自启自然失败。本机一直是开发实例（固定路径），所以看不出问题。
+- 改法：新增 `loginTargetPath()`，portable 启动器会把用户双击的原始 exe 放进 `PORTABLE_EXECUTABLE_FILE`，存在就登记它；没有该变量（Setup 安装版 / 开发实例）时回退 `process.execPath`。启动器的 `portable.nsi` 里确认了会注入这三个变量，用 FILE 而不是 DIR（DIR 只有目录，拼文件名会被自定义文件名坑掉）。
+
 ## 0.6.8 — 2026-11-07 靠边最多藏一半
 
 - 现象：拖到屏幕边时球藏得太深，只剩一条边。原因是拖拽夹取按「窗口边 + 固定 slack 32」算，而 0.6.7 把窗口留白从 10 提到 28，等于球心可以跑到屏外 24px——40px 的球只剩 4px 可见。

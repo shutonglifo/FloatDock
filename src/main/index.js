@@ -303,10 +303,18 @@ function pushSettings () {
   }
 }
 
+// portable 版真正的 exe 在随机 Temp 解压目录里跑，重启后目录失效；
+// 启动器会把用户双击的原始 exe 路径放进 PORTABLE_EXECUTABLE_FILE，自启登记它
+function loginTargetPath () {
+  const portable = process.env.PORTABLE_EXECUTABLE_FILE
+  if (portable && fs.existsSync(portable)) return portable
+  return process.execPath
+}
+
 function applyLoginItem (on) {
   if (process.platform !== 'win32') return
   try {
-    app.setLoginItemSettings({ openAtLogin: on, path: process.execPath, args: [] })
+    app.setLoginItemSettings({ openAtLogin: on, path: loginTargetPath(), args: [] })
   } catch { /* 开发模式下可能被拒绝，不影响其它功能 */ }
 }
 
