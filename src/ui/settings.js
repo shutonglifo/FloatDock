@@ -8,6 +8,7 @@ const error = document.getElementById('error')
 const slotsBox = document.getElementById('slots')
 const slots2Box = document.getElementById('slots2')
 const slots2Tip = document.getElementById('slots2Tip')
+const layerTabs = document.getElementById('layerTabs')
 const chooser = document.getElementById('chooser')
 const picker = document.getElementById('picker')
 const filter = document.getElementById('filter')
@@ -27,6 +28,7 @@ const KINDS = [
 
 let active = null
 let innerCount = 10
+let layer = 0
 let current = { opacity: 0.85, size: 64, autoLaunch: false, iconDataUrl: null, slots: [] }
 
 function svgFor (icon) {
@@ -87,17 +89,24 @@ function slotRow (slot, g, num, pickLocked) {
   return row
 }
 
-// 全局下标 0~9 是第一层，10~21 是第二层；两层分开渲染但共用一套行模板
+// 全局下标 0~9 是第一层，10~21 是第二层；两页并列，点标签切换
 function renderSlots () {
   slotsBox.textContent = ''
   slots2Box.textContent = ''
   const locked = current.slots.slice(0, innerCount).some((s) => s.kind === 'empty')
-  slots2Tip.style.display = locked ? '' : 'none'
+  slots2Tip.style.display = locked && layer === 1 ? '' : 'none'
   current.slots.forEach((slot, i) => {
     const outer = i >= innerCount
     const row = slotRow(slot, i, outer ? i - innerCount + 1 : i + 1, outer && locked && slot.kind === 'empty')
     ;(outer ? slots2Box : slotsBox).appendChild(row)
   })
+  slotsBox.style.display = layer === 0 ? '' : 'none'
+  slots2Box.style.display = layer === 1 ? '' : 'none'
+  for (const btn of layerTabs.querySelectorAll('button')) btn.classList.toggle('on', Number(btn.dataset.layer) === layer)
+}
+
+for (const btn of layerTabs.querySelectorAll('button')) {
+  btn.addEventListener('click', () => { layer = Number(btn.dataset.layer); renderSlots() })
 }
 
 function usedKinds () {

@@ -1,7 +1,7 @@
 {
   "name": "floatdock",
   "productName": "FloatDock",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "悬浮在桌面上的功能圈：快捷文本框、窗口置顶，槽位可自己扩展",
   "main": "src/main/index.js",
   "author": "yuer",

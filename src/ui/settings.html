@@ -31,8 +31,8 @@
   section { padding: 9px 0 11px; border-top: 1px solid rgba(20,23,26,.1); }
   section:first-child { border-top: 0; padding-top: 2px; }
   h2 { margin: 0 0 9px; font-size: 11px; font-weight: 600; letter-spacing: .08em; color: #7a7f86; }
-  .sub-h { margin-top: 16px; }
-  .sub-h .tip { font-weight: 400; letter-spacing: 0; color: #a6abb1; }
+  .layer-tabs { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .layer-tabs .tip { font-size: 11px; color: #a6abb1; }
   .slot-acts button[disabled] { color: #a6abb1; cursor: default; }
 
   .row { display: grid; grid-template-columns: 52px 1fr 46px; align-items: center; gap: 10px; margin-bottom: 9px; }
@@ -154,9 +154,15 @@
 
       <section>
         <h2>功能圈槽位</h2>
+        <div class="layer-tabs">
+          <div class="seg" id="layerTabs">
+            <button data-layer="0" class="on">第一层</button>
+            <button data-layer="1">第二层</button>
+          </div>
+          <span id="slots2Tip" class="tip">填满第一层 10 格后解锁</span>
+        </div>
         <div id="slots"></div>
-        <h2 class="sub-h">第二层 · 外圈<span id="slots2Tip" class="tip">（填满第一层 10 格后解锁）</span></h2>
-        <div id="slots2"></div>
+        <div id="slots2" style="display:none"></div>
       </section>
 
       <section>
