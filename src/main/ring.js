@@ -221,14 +221,16 @@ function layout (ballBounds, workArea, ballRadius) {
     if (i < SLOT_COUNT) inner.push(i)
     else outer.push(i)
   })
-  visible = inner.concat(outer)
+  // 外圈一旦有内容，其余空格以小圆点占位，让人知道还有空位可加
+  const outerAll = outer.length ? slots.slice(SLOT_COUNT).map((s, k) => SLOT_COUNT + k) : []
+  visible = inner.concat(outerAll)
   let rings
   if (!visible.length) {
     visible = slots.slice(0, SLOT_COUNT).map((s, i) => i)
     const { r, angles } = plan(ballBounds, workArea, ballRadius, visible.length, SLOT_SIZE)
     rings = [{ r, angles, size: SLOT_SIZE }]
-  } else if (inner.length && outer.length) {
-    rings = planTwo(ballBounds, workArea, ballRadius, inner.length, outer.length)
+  } else if (outerAll.length && inner.length) {
+    rings = planTwo(ballBounds, workArea, ballRadius, inner.length, outerAll.length)
   } else if (inner.length) {
     const { r, angles } = plan(ballBounds, workArea, ballRadius, inner.length, SLOT_SIZE)
     rings = [{ r, angles, size: SLOT_SIZE }]

@@ -82,6 +82,15 @@ function normalizeSlots (input) {
     if (raw.kind !== 'empty' && !slot.path && !['note', 'pin'].includes(raw.kind)) slot.kind = 'empty'
     out.push(slot)
   }
+  // 外圈只装内圈的溢出：内圈有空位时，外圈内容按顺序自动补进去
+  const holes = []
+  for (let i = 0; i < SLOT_COUNT; i++) if (out[i].kind === 'empty') holes.push(i)
+  const feed = []
+  for (let i = SLOT_COUNT; i < SLOT_TOTAL; i++) if (out[i].kind !== 'empty') feed.push(i)
+  for (let k = 0; k < Math.min(holes.length, feed.length); k++) {
+    out[holes[k]] = out[feed[k]]
+    out[feed[k]] = { kind: 'empty' }
+  }
   return out
 }
 
